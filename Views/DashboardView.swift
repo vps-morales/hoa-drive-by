@@ -13,10 +13,26 @@ struct DashboardView: View {
                     .foregroundStyle(.secondary)
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                    MetricCard(title: "Communities", value: "\(appState.store.communities.count)", systemImage: "building.2")
-                    MetricCard(title: "Open", value: "\(appState.store.violations.filter { $0.status == .open }.count)", systemImage: "exclamationmark.circle")
-                    MetricCard(title: "Warning Sent", value: "\(appState.store.violations.filter { $0.status == .warningSent }.count)", systemImage: "envelope.badge")
-                    MetricCard(title: "Resolved", value: "\(appState.store.violations.filter { $0.status == .resolved }.count)", systemImage: "checkmark.circle")
+                    NavigationLink {
+                        CommunitiesView()
+                    } label: {
+                        MetricCard(title: "Communities", value: "\(appState.store.communities.count)", systemImage: "building.2")
+                    }
+                    NavigationLink {
+                        ViolationListView(statusFilter: .open, title: "Open Violations")
+                    } label: {
+                        MetricCard(title: "Open", value: "\(appState.store.violations.filter { $0.status == .open }.count)", systemImage: "exclamationmark.circle")
+                    }
+                    NavigationLink {
+                        ViolationListView(statusFilter: .warningSent, title: "Warning Sent")
+                    } label: {
+                        MetricCard(title: "Warning Sent", value: "\(appState.store.violations.filter { $0.status == .warningSent }.count)", systemImage: "envelope.badge")
+                    }
+                    NavigationLink {
+                        ViolationListView(statusFilter: .resolved, title: "Resolved Violations")
+                    } label: {
+                        MetricCard(title: "Resolved", value: "\(appState.store.violations.filter { $0.status == .resolved }.count)", systemImage: "checkmark.circle")
+                    }
                 }
 
                 Text("Recent Activity")
