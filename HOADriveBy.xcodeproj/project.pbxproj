@@ -185,6 +185,8 @@
 			A59C7B3D356FAC1FBE9A9D1B /* FileManager+Paths.swift in Sources */,
 			B7C19298294BA3C378F1440A /* LocationService.swift in Sources */,
 			3E919DC2D9A53D603BBE7656 /* PDFReportService.swift in Sources */,
+			A1B2C3D4E5F6A7B8C9D0E1F2 /* AppError.swift in Sources */,
+			B2C3D4E5F6A7B8C9D0E1F2A3 /* ErrorHandler.swift in Sources */,
 			F7C6C0C60E4A9F01B8BB3ED3 /* Date+Formatting.swift in Sources */,
 			6D0BD5E5542EB31B0E476B25 /* String+CSV.swift in Sources */,
 			1ABA6FFCB7DAB915C96B9E20 /* NewViolationViewModel.swift in Sources */,
