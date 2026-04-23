@@ -25,6 +25,7 @@ struct AddCommunityView: View {
                         Task {
                             do {
                                 try await appState.store.addCommunity(Community(name: name, address: address))
+                                appState.objectWillChange.send()
                                 dismiss()
                             } catch {
                                 print(error)

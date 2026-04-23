@@ -99,6 +99,7 @@ struct ViolationDetailView: View {
         updated.updatedAt = .now
         do {
             try await appState.store.updateViolation(updated)
+            appState.objectWillChange.send()
         } catch {
             print("Status update failed: \(error)")
         }

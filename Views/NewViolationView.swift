@@ -176,6 +176,7 @@ struct NewViolationView: View {
             let fileNames = try viewModel.images.map { try appState.store.saveImage($0) }
             violation.photoFileNames = fileNames
             try await appState.store.addViolation(violation)
+            appState.objectWillChange.send()
             viewModel.reset()
             alertMessage = "Violation saved successfully."
             showingAlert = true

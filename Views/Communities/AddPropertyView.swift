@@ -34,6 +34,7 @@ struct AddPropertyView: View {
                             do {
                                 let property = Property(streetAddress: streetAddress, unit: unit, lotNumber: lotNumber, ownerName: ownerName, notes: notes)
                                 try await appState.store.addProperty(property, to: communityID)
+                                appState.objectWillChange.send()
                                 dismiss()
                             } catch {
                                 print(error)
