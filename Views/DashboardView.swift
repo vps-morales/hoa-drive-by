@@ -33,6 +33,11 @@ struct DashboardView: View {
                     } label: {
                         MetricCard(title: "Resolved", value: "\(appState.store.violations.filter { $0.status == .resolved }.count)", systemImage: "checkmark.circle")
                     }
+                    NavigationLink {
+                        AnalyticsView()
+                    } label: {
+                        MetricCard(title: "Analytics", value: "View", systemImage: "chart.bar")
+                    }
                 }
 
                 Text("Recent Activity")
