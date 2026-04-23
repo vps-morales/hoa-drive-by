@@ -3,14 +3,15 @@ import UIKit
 
 struct NewViolationView: View {
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var errorHandler: ErrorHandler
     @StateObject private var viewModel = NewViolationViewModel()
     @StateObject private var locationService = LocationService()
 
     @State private var showingImagePicker = false
     @State private var imageSource: UIImagePickerController.SourceType = .camera
     @State private var showingAddPropertyView = false
-    @State private var alertMessage = ""
-    @State private var showingAlert = false
+    @State private var successMessage = ""
+    @State private var showingSuccess = false
 
     private var selectedCommunity: Community? {
         guard let id = viewModel.selectedCommunityID else { return nil }
@@ -154,21 +155,21 @@ struct NewViolationView: View {
             if let selectedCommunity {
                 AddPropertyView(communityID: selectedCommunity.id)
                     .environmentObject(appState)
+                    .environmentObject(errorHandler)
             } else {
                 EmptyView()
             }
         }
-        .alert("Notice", isPresented: $showingAlert) {
+        .alert("Success", isPresented: $showingSuccess) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text(alertMessage)
+            Text(successMessage)
         }
     }
 
     private func saveViolation() async {
         guard var violation = viewModel.buildViolation(location: locationService.latestLocation) else {
-            alertMessage = "Please select a community and property."
-            showingAlert = true
+            errorHandler.handle(.invalidInput("Please select a community and property."))
             return
         }
 
@@ -178,11 +179,10 @@ struct NewViolationView: View {
             try await appState.store.addViolation(violation)
             appState.objectWillChange.send()
             viewModel.reset()
-            alertMessage = "Violation saved successfully."
-            showingAlert = true
+            successMessage = "Violation saved successfully."
+            showingSuccess = true
         } catch {
-            alertMessage = "Failed to save violation: \(error.localizedDescription)"
-            showingAlert = true
+            errorHandler.handle(error)
         }
     }
 }

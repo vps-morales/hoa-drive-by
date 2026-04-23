@@ -3,6 +3,7 @@ import SwiftUI
 struct AddPropertyView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var errorHandler: ErrorHandler
 
     let communityID: UUID
 
@@ -37,7 +38,7 @@ struct AddPropertyView: View {
                                 appState.objectWillChange.send()
                                 dismiss()
                             } catch {
-                                print(error)
+                                errorHandler.handle(error)
                             }
                         }
                     }

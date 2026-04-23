@@ -3,11 +3,14 @@ import UIKit
 
 struct ViolationDetailView: View {
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var errorHandler: ErrorHandler
     let violation: ViolationRecord
 
     @State private var selectedStatus: ViolationStatus = .open
     @State private var shareURL: URL?
     @State private var showingShare = false
+    @State private var successMessage = ""
+    @State private var showingSuccess = false
 
     private var community: Community? {
         appState.store.community(for: violation.communityID)
@@ -85,6 +88,11 @@ struct ViolationDetailView: View {
                 }
             }
         }
+        .alert("Success", isPresented: $showingSuccess) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(successMessage)
+        }
         .navigationTitle(violation.title)
         .sheet(isPresented: $showingShare) {
             if let shareURL {
@@ -100,8 +108,10 @@ struct ViolationDetailView: View {
         do {
             try await appState.store.updateViolation(updated)
             appState.objectWillChange.send()
+            successMessage = "Status updated successfully."
+            showingSuccess = true
         } catch {
-            print("Status update failed: \(error)")
+            errorHandler.handle(error)
         }
     }
 }
