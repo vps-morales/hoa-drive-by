@@ -23,7 +23,21 @@ class ErrorHandler: ObservableObject {
 
 extension View {
     func errorAlert(errorHandler: ErrorHandler) -> some View {
-        alert("Error", isPresented: $errorHandler.isShowingError) {
+        let isShowing = Binding(
+            get: { errorHandler.isShowingError },
+            set: { errorHandler.isShowingError = $0 }
+        )
+
+        let messageText: String = {
+            if let error = errorHandler.currentError {
+                let title = error.errorDescription ?? "An error occurred"
+                let suggestion = error.recoverySuggestion ?? ""
+                return suggestion.isEmpty ? title : "\(title)\n\n\(suggestion)"
+            }
+            return "An unknown error occurred"
+        }()
+
+        return alert("Error", isPresented: isShowing) {
             if let error = errorHandler.currentError, error.isRecoverable {
                 Button("OK", role: .cancel) {
                     errorHandler.clear()
@@ -34,13 +48,7 @@ extension View {
                 }
             }
         } message: {
-            if let error = errorHandler.currentError {
-                let title = error.errorDescription ?? "An error occurred"
-                let suggestion = error.recoverySuggestion ?? ""
-                let message = suggestion.isEmpty ? title : "\(title)\n\n\(suggestion)"
-                return Text(message)
-            }
-            return Text("An unknown error occurred")
+            Text(messageText)
         }
     }
 }
