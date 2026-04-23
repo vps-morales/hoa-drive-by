@@ -35,6 +35,7 @@
 		21B83411A85DA14F49F6BDE7 /* NewViolationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175B1431BE0FD77951AEF5 /* NewViolationView.swift */; };
 		0A39D5530274A3FF362D32BD /* ViolationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CC3D848969F8BC639789E3 /* ViolationDetailView.swift */; };
 		CBC0BACA7BA0F5179DF0BD67 /* ViolationRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EBFF8AFC79A3ABC2F6AAB8 /* ViolationRowView.swift */; };
+		F42E1C5A8D9E7B4C6A3F2E1D /* ViolationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4C5F1B9A8D7C3E5F6G2A1H /* ViolationListView.swift */; };
 		10583421B5888D4D87C534FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7399B171AA253D1B6CF25E33 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 		6C175B1431BE0FD77951AEF5 /* NewViolationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewViolationView.swift"; sourceTree = "<group>"; };
 		07CC3D848969F8BC639789E3 /* ViolationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViolationDetailView.swift"; sourceTree = "<group>"; };
 		48EBFF8AFC79A3ABC2F6AAB8 /* ViolationRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViolationRowView.swift"; sourceTree = "<group>"; };
+		2E4C5F1B9A8D7C3E5F6G2A1H /* ViolationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViolationListView.swift"; sourceTree = "<group>"; };
 		7399B171AA253D1B6CF25E33 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
 		D9F9BEB5CC66020CE8B1C459 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		F5BF48AA40CAD7891EB709FC /* HOADriveBy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HOADriveBy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,10 +96,13 @@
 		9F58BDF7D4F04F6C4DC3CB6C /* Views */ = {isa = PBXGroup; children = (
 			1A8E55EB084AE68FCBC98A75 /* Communities */,
 			2BC3D39182445EE790157B8E /* Properties */,
-			1551ED14602CCC751BCA6793 /* Violations */,
 			F8A961A65445D96B693D0256 /* Components */,
 			94DB17A391C41BB61D25802C /* DashboardView.swift */,
 			30D8A316BFBEE200350C0DB9 /* RootTabView.swift */,
+			6C175B1431BE0FD77951AEF5 /* NewViolationView.swift */,
+			07CC3D848969F8BC639789E3 /* ViolationDetailView.swift */,
+			48EBFF8AFC79A3ABC2F6AAB8 /* ViolationRowView.swift */,
+			2E4C5F1B9A8D7C3E5F6G2A1H /* ViolationListView.swift */,
 		); path = Views; sourceTree = "<group>"; };
 		AB8D408CB1881C666AAC0831 /* App */ = {isa = PBXGroup; children = (
 			B08CA3795BA8E21B9F14359B /* AppState.swift */,
@@ -134,11 +139,6 @@
 		2BC3D39182445EE790157B8E /* Properties */ = {isa = PBXGroup; children = (
 			A5D1DA67C3E10C806D3926D8 /* PropertyDetailView.swift */,
 		); path = Properties; sourceTree = "<group>"; };
-		1551ED14602CCC751BCA6793 /* Violations */ = {isa = PBXGroup; children = (
-			6C175B1431BE0FD77951AEF5 /* NewViolationView.swift */,
-			07CC3D848969F8BC639789E3 /* ViolationDetailView.swift */,
-			48EBFF8AFC79A3ABC2F6AAB8 /* ViolationRowView.swift */,
-		); path = Violations; sourceTree = "<group>"; };
 		F8A961A65445D96B693D0256 /* Components */ = {isa = PBXGroup; children = (
 			8AEE2F07561FA091151FD09B /* ImagePicker.swift */,
 			86E20C5304979E8F8EA9DC96 /* ShareSheet.swift */,
@@ -189,6 +189,7 @@
 			21B83411A85DA14F49F6BDE7 /* NewViolationView.swift in Sources */,
 			0A39D5530274A3FF362D32BD /* ViolationDetailView.swift in Sources */,
 			CBC0BACA7BA0F5179DF0BD67 /* ViolationRowView.swift in Sources */,
+			F42E1C5A8D9E7B4C6A3F2E1D /* ViolationListView.swift in Sources */,
 		); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
