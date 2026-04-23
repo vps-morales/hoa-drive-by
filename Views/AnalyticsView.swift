@@ -43,7 +43,7 @@ struct AnalyticsView: View {
                     // Summary Cards
                     VStack(spacing: 12) {
                         // Total Violations
-                        MetricCard(
+                        AnalyticsMetricCard(
                             title: "Total Violations",
                             value: "\(metrics.totalViolations)",
                             icon: "exclamationmark.circle.fill",
@@ -132,7 +132,7 @@ struct AnalyticsView: View {
     }
 }
 
-struct MetricCard: View {
+struct AnalyticsMetricCard: View {
     let title: String
     let value: String
     let icon: String
