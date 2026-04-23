@@ -16,13 +16,7 @@ struct ViolationListView: View {
     var body: some View {
         List {
             if filteredViolations.isEmpty {
-                ContentUnavailableView("No violations", systemImage: "doc.text.magnifyingglass", description: {
-                    if let statusFilter {
-                        Text("No \(statusFilter.rawValue.lowercased()) violations yet.")
-                    } else {
-                        Text("Create your first violation from the New tab.")
-                    }
-                })
+                ContentUnavailableView("No violations", systemImage: "doc.text.magnifyingglass", description: Text(statusFilter.map { "No \($0.rawValue.lowercased()) violations yet." } ?? "Create your first violation from the New tab."))
             } else {
                 ForEach(filteredViolations.sorted(by: { $0.createdAt > $1.createdAt })) { violation in
                     if let community = appState.store.community(for: violation.communityID),
