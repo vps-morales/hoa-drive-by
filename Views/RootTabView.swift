@@ -27,6 +27,13 @@ struct RootTabView: View {
             }
 
             NavigationStack {
+                SearchView()
+            }
+            .tabItem {
+                Label("Search", systemImage: "magnifyingglass")
+            }
+
+            NavigationStack {
                 NewViolationView()
             }
             .tabItem {
