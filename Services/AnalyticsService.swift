@@ -77,11 +77,9 @@ struct AnalyticsService {
             dateCounts[date, default: 0] += 1
         }
 
-        let previousStartDate = calendar.date(
-            byAdding: .day,
-            value: -Int(startDate.timeIntervalSinceNow / 86400),
-            to: startDate
-        ) ?? startDate
+        let now = Date()
+        let daysDiff = calendar.dateComponents([.day], from: startDate, to: now).day ?? 0
+        let previousStartDate = calendar.date(byAdding: .day, value: -daysDiff, to: startDate) ?? startDate
         let previousViolations = violations.filter { v in
             v.createdAt >= previousStartDate && v.createdAt < startDate
         }
