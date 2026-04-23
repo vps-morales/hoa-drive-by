@@ -8,6 +8,7 @@ struct NewViolationView: View {
 
     @State private var showingImagePicker = false
     @State private var imageSource: UIImagePickerController.SourceType = .camera
+    @State private var showingAddPropertyView = false
     @State private var alertMessage = ""
     @State private var showingAlert = false
 
@@ -44,13 +45,32 @@ struct NewViolationView: View {
                     }
                 }
 
-                Picker("Property", selection: $viewModel.selectedPropertyID) {
-                    Text("Choose").tag(Optional<UUID>.none)
-                    ForEach(selectedCommunity?.properties ?? []) { property in
-                        Text(property.displayName).tag(Optional(property.id))
+                if let selectedCommunity {
+                    if selectedCommunity.properties.isEmpty {
+                        HStack {
+                            Text("No properties yet")
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Button("Add Property") {
+                                showingAddPropertyView = true
+                            }
+                            .buttonStyle(.bordered)
+                        }
                     }
+
+                    Picker("Property", selection: $viewModel.selectedPropertyID) {
+                        Text("Choose").tag(Optional<UUID>.none)
+                        ForEach(selectedCommunity.properties) { property in
+                            Text(property.displayName).tag(Optional(property.id))
+                        }
+                    }
+                    .disabled(selectedCommunity.properties.isEmpty)
+                } else {
+                    Picker("Property", selection: $viewModel.selectedPropertyID) {
+                        Text("Choose").tag(Optional<UUID>.none)
+                    }
+                    .disabled(true)
                 }
-                .disabled(selectedCommunity == nil)
             }
 
             Section("Violation") {
@@ -128,6 +148,14 @@ struct NewViolationView: View {
                 if let image {
                     viewModel.images.append(image)
                 }
+            }
+        }
+        .sheet(isPresented: $showingAddPropertyView) {
+            if let selectedCommunity {
+                AddPropertyView(communityID: selectedCommunity.id)
+                    .environmentObject(appState)
+            } else {
+                EmptyView()
             }
         }
         .alert("Notice", isPresented: $showingAlert) {
