@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import HOADriveBy
 
 final class AppStoreIntegrationTests: XCTestCase {
@@ -301,5 +302,153 @@ final class AppStoreIntegrationTests: XCTestCase {
     func testEmptyStore() {
         XCTAssertEqual(store.communities.count, 0)
         XCTAssertEqual(store.violations.count, 0)
+    }
+}
+
+final class AppStateObservationTests: XCTestCase {
+    var appState: AppState!
+
+    @MainActor
+    override func setUp() {
+        super.setUp()
+        appState = AppState()
+    }
+
+    @MainActor
+    func testAppStatePublishesStoreChanges() async throws {
+        let community = Community(name: "Test HOA")
+        try await appState.store.addCommunity(community)
+
+        XCTAssertEqual(appState.store.communities.count, 1)
+        XCTAssertEqual(appState.store.communities[0].name, "Test HOA")
+    }
+
+    @MainActor
+    func testAppStateObjectWillChangeNotification() async throws {
+        let expectation = expectation(forNotification: NSNotification.Name("TestNotification"), object: nil)
+
+        let cancellable = appState.objectWillChange.sink { _ in
+            NotificationCenter.default.post(name: NSNotification.Name("TestNotification"), object: nil)
+        }
+
+        let community = Community(name: "Test HOA")
+        try await appState.store.addCommunity(community)
+        appState.objectWillChange.send()
+
+        waitForExpectations(timeout: 1.0)
+        cancellable.cancel()
+    }
+
+    @MainActor
+    func testCommunityAdditionUpdatesAppState() async throws {
+        XCTAssertEqual(appState.store.communities.count, 0)
+
+        let community1 = Community(name: "Community 1")
+        try await appState.store.addCommunity(community1)
+
+        XCTAssertEqual(appState.store.communities.count, 1)
+
+        let community2 = Community(name: "Community 2")
+        try await appState.store.addCommunity(community2)
+
+        XCTAssertEqual(appState.store.communities.count, 2)
+    }
+
+    @MainActor
+    func testPropertyAdditionUpdatesAppState() async throws {
+        let community = Community(name: "Test HOA")
+        try await appState.store.addCommunity(community)
+
+        XCTAssertEqual(appState.store.communities[0].properties.count, 0)
+
+        let property = Property(streetAddress: "123 Main St")
+        try await appState.store.addProperty(property, to: community.id)
+
+        XCTAssertEqual(appState.store.communities[0].properties.count, 1)
+    }
+
+    @MainActor
+    func testViolationAdditionUpdatesAppState() async throws {
+        let community = Community(name: "Test HOA")
+        let property = Property(streetAddress: "123 Main St")
+
+        try await appState.store.addCommunity(community)
+        try await appState.store.addProperty(property, to: community.id)
+
+        XCTAssertEqual(appState.store.violations.count, 0)
+
+        let violation = ViolationRecord(
+            communityID: community.id,
+            propertyID: property.id,
+            category: .trashBins,
+            title: "Test Violation",
+            note: "Test note"
+        )
+        try await appState.store.addViolation(violation)
+
+        XCTAssertEqual(appState.store.violations.count, 1)
+    }
+
+    @MainActor
+    func testViolationStatusUpdateReflectsInAppState() async throws {
+        let community = Community(name: "Test HOA")
+        let property = Property(streetAddress: "123 Main St")
+
+        try await appState.store.addCommunity(community)
+        try await appState.store.addProperty(property, to: community.id)
+
+        let violation = ViolationRecord(
+            communityID: community.id,
+            propertyID: property.id,
+            category: .landscaping,
+            status: .open,
+            title: "Landscape Issue",
+            note: "Dead grass"
+        )
+        try await appState.store.addViolation(violation)
+
+        XCTAssertEqual(appState.store.violations[0].status, .open)
+
+        var updated = violation
+        updated.status = .resolved
+        try await appState.store.updateViolation(updated)
+
+        XCTAssertEqual(appState.store.violations[0].status, .resolved)
+    }
+
+    @MainActor
+    func testMultipleOperationsUpdateAppStateCorrectly() async throws {
+        let community1 = Community(name: "Community 1")
+        let community2 = Community(name: "Community 2")
+
+        try await appState.store.addCommunity(community1)
+        try await appState.store.addCommunity(community2)
+
+        let property1 = Property(streetAddress: "123 Main St")
+        let property2 = Property(streetAddress: "456 Oak Ave")
+
+        try await appState.store.addProperty(property1, to: community1.id)
+        try await appState.store.addProperty(property2, to: community1.id)
+
+        XCTAssertEqual(appState.store.communities.count, 2)
+        XCTAssertEqual(appState.store.communities[0].properties.count, 2)
+        XCTAssertEqual(appState.store.communities[1].properties.count, 0)
+    }
+
+    @MainActor
+    func testAppStateReflectsRealTimeChanges() async throws {
+        let community = Community(name: "Test HOA")
+        try await appState.store.addCommunity(community)
+
+        let addedCommunity = appState.store.communities[0]
+        XCTAssertEqual(addedCommunity.name, "Test HOA")
+        XCTAssertEqual(addedCommunity.id, community.id)
+
+        let property = Property(streetAddress: "789 Pine Rd")
+        try await appState.store.addProperty(property, to: community.id)
+
+        let updatedCommunity = appState.store.communities[0]
+        XCTAssertEqual(updatedCommunity.properties.count, 1)
+        XCTAssertEqual(updatedCommunity.properties[0].streetAddress, "789 Pine Rd")
     }
 }
