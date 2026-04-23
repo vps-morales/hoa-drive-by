@@ -108,6 +108,13 @@ struct ViolationDetailView: View {
         do {
             try await appState.store.updateViolation(updated)
             appState.objectWillChange.send()
+
+            // Send notification
+            NotificationService.shared.scheduleViolationStatusChanged(
+                violation: violation.title,
+                newStatus: selectedStatus.rawValue
+            )
+
             successMessage = "Status updated successfully."
             showingSuccess = true
         } catch {

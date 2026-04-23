@@ -2,15 +2,28 @@ import SwiftUI
 
 struct DashboardView: View {
     @EnvironmentObject private var appState: AppState
+    @State private var showingNotificationSettings = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("HOA Drive-By")
-                    .font(.largeTitle.bold())
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("HOA Drive-By")
+                            .font(.largeTitle.bold())
 
-                Text("Photo-first inspections for small HOAs.")
-                    .foregroundStyle(.secondary)
+                        Text("Photo-first inspections for small HOAs.")
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+
+                    Button(action: { showingNotificationSettings = true }) {
+                        Image(systemName: "bell.fill")
+                            .font(.system(size: 18))
+                            .foregroundStyle(.blue)
+                    }
+                }
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     NavigationLink {
@@ -63,6 +76,9 @@ struct DashboardView: View {
             .padding()
         }
         .navigationTitle("Dashboard")
+        .sheet(isPresented: $showingNotificationSettings) {
+            NotificationSettingsView()
+        }
     }
 }
 

@@ -178,6 +178,17 @@ struct NewViolationView: View {
             violation.photoFileNames = fileNames
             try await appState.store.addViolation(violation)
             appState.objectWillChange.send()
+
+            // Send notification
+            if let community = appState.store.community(for: violation.communityID),
+               let property = appState.store.property(for: violation.propertyID, in: violation.communityID) {
+                NotificationService.shared.scheduleViolationCreated(
+                    title: violation.title,
+                    community: community.name,
+                    property: property.displayName
+                )
+            }
+
             viewModel.reset()
             successMessage = "Violation saved successfully."
             showingSuccess = true
