@@ -20,6 +20,13 @@ struct RootTabView: View {
             }
 
             NavigationStack {
+                MapViewContainer()
+            }
+            .tabItem {
+                Label("Map", systemImage: "map")
+            }
+
+            NavigationStack {
                 NewViolationView()
             }
             .tabItem {
