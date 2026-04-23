@@ -16,6 +16,24 @@ struct NewViolationView: View {
         return appState.store.community(for: id)
     }
 
+    private var locationText: String {
+        guard let location = locationService.latestLocation else { return "No GPS captured." }
+        return String(format: "%.6f, %.6f", location.coordinate.latitude, location.coordinate.longitude)
+    }
+
+    private var locationStatusText: String {
+        switch locationService.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            return "Location access granted"
+        case .denied, .restricted:
+            return "Location access denied"
+        case .notDetermined:
+            return "Location permission not requested"
+        @unknown default:
+            return "Location permission unknown"
+        }
+    }
+
     var body: some View {
         Form {
             Section("Select Location") {
@@ -56,6 +74,17 @@ struct NewViolationView: View {
                 Button("Use Current GPS") {
                     locationService.requestAccess()
                 }
+
+                HStack {
+                    Text("GPS")
+                    Spacer()
+                    Text(locationText)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.trailing)
+                }
+                Text(locationStatusText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Section("Photos") {
