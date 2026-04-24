@@ -146,7 +146,7 @@ private struct MetricCard: View {
 
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(value)
-                        .font(.system(size: Int(value) != nil ? 36 : 16, weight: .bold))
+                        .font(.system(size: Int(value) != nil ? 36 : 13, weight: .semibold))
                         .foregroundStyle(iconColor)
                 }
             }
