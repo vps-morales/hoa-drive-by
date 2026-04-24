@@ -199,21 +199,31 @@ struct ViolationTrendChart: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .bottom, spacing: 4) {
                 ForEach(Array(dailyCounts.suffix(14)).enumerated(), id: \.element.date) { index, day in
-                    VStack(spacing: 4) {
-                        RoundedRectangle(cornerRadius: 2)
-                            .fill(Color.blue)
-                            .frame(height: CGFloat(day.count) / CGFloat(max(maxCount, 1)) * 150)
-
-                        if index % 2 == 0 {
-                            Text(day.date.formatted(date: .abbreviated, time: .omitted))
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    DailyBarView(day: day, maxCount: maxCount, showLabel: index % 2 == 0)
                 }
                 Spacer()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+}
+
+private struct DailyBarView: View {
+    let day: DailyViolationCount
+    let maxCount: Int
+    let showLabel: Bool
+
+    var body: some View {
+        VStack(spacing: 4) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color.blue)
+                .frame(height: CGFloat(day.count) / CGFloat(max(maxCount, 1)) * 150)
+
+            if showLabel {
+                Text(day.date.formatted(date: .abbreviated, time: .omitted))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }
