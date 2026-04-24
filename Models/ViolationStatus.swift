@@ -13,8 +13,8 @@ enum ViolationStatus: String, Codable, CaseIterable, Identifiable {
         switch self {
         case .open: return 0
         case .warningSent: return 1
-        case .escalated: return 2
-        case .resolved: return 3
+        case .resolved: return 2
+        case .escalated: return 3
         }
     }
 
