@@ -198,15 +198,18 @@ struct ViolationTrendChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .bottom, spacing: 4) {
-                ForEach(dailyCounts.suffix(14), id: \.date) { day in
+                ForEach(Array(dailyCounts.suffix(14)).enumerated(), id: \.element.date) { index, day in
                     VStack(spacing: 4) {
                         RoundedRectangle(cornerRadius: 2)
                             .fill(Color.blue)
                             .frame(height: CGFloat(day.count) / CGFloat(max(maxCount, 1)) * 150)
 
-                        Text(day.date.formatted(date: .abbreviated, time: .omitted))
-                            .font(.caption2)
-                            .rotationEffect(.degrees(-45))
+                        if index % 2 == 0 {
+                            Text(day.date.formatted(date: .abbreviated, time: .omitted))
+                                .font(.caption2)
+                                .rotationEffect(.degrees(-45))
+                                .frame(height: 30)
+                        }
                     }
                 }
                 Spacer()
