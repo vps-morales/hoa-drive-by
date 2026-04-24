@@ -14,20 +14,17 @@ struct NotificationService {
         }
     }
 
-    func scheduleViolationCreated(
-        title: String,
-        community: String,
-        property: String,
-        timeInterval: TimeInterval = 2
-    ) {
+    private func schedule(title: String, body: String, identifier: String, badge: Bool = false) {
         let content = UNMutableNotificationContent()
-        content.title = "New Violation"
-        content.body = "\(title) at \(property), \(community)"
+        content.title = title
+        content.body = body
         content.sound = .default
-        content.badge = NSNumber(value: UIApplication.shared.applicationIconBadgeNumber + 1)
+        if badge {
+            content.badge = NSNumber(value: UIApplication.shared.applicationIconBadgeNumber + 1)
+        }
 
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
@@ -36,45 +33,40 @@ struct NotificationService {
         }
     }
 
+    func scheduleViolationCreated(
+        title: String,
+        community: String,
+        property: String
+    ) {
+        schedule(
+            title: "New Violation",
+            body: "\(title) at \(property), \(community)",
+            identifier: UUID().uuidString,
+            badge: true
+        )
+    }
+
     func scheduleViolationStatusChanged(
         violation: String,
-        newStatus: String,
-        timeInterval: TimeInterval = 2
+        newStatus: String
     ) {
-        let content = UNMutableNotificationContent()
-        content.title = "Status Updated"
-        content.body = "\(violation) is now \(newStatus)"
-        content.sound = .default
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error)")
-            }
-        }
+        schedule(
+            title: "Status Updated",
+            body: "\(violation) is now \(newStatus)",
+            identifier: UUID().uuidString
+        )
     }
 
     func scheduleDailySummary(
         openCount: Int,
         resolvedCount: Int,
-        escalatedCount: Int,
-        timeInterval: TimeInterval = 86400
+        escalatedCount: Int
     ) {
-        let content = UNMutableNotificationContent()
-        content.title = "Daily Summary"
-        content.body = "Open: \(openCount) | Resolved: \(resolvedCount) | Escalated: \(escalatedCount)"
-        content.sound = .default
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        let request = UNNotificationRequest(identifier: "daily-summary", content: content, trigger: trigger)
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error)")
-            }
-        }
+        schedule(
+            title: "Daily Summary",
+            body: "Open: \(openCount) | Resolved: \(resolvedCount) | Escalated: \(escalatedCount)",
+            identifier: "daily-summary"
+        )
     }
 
     func cancelAll() {

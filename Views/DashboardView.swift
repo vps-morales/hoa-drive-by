@@ -4,6 +4,14 @@ struct DashboardView: View {
     @EnvironmentObject private var appState: AppState
     @State private var showingNotificationSettings = false
 
+    private var statusCounts: [ViolationStatus: Int] {
+        var counts: [ViolationStatus: Int] = [:]
+        for violation in appState.store.violations {
+            counts[violation.status, default: 0] += 1
+        }
+        return counts
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -34,17 +42,17 @@ struct DashboardView: View {
                     NavigationLink {
                         ViolationListView(statusFilter: .open, title: "Open Violations")
                     } label: {
-                        MetricCard(title: "Open", value: "\(appState.store.violations.filter { $0.status == .open }.count)", systemImage: "exclamationmark.circle")
+                        MetricCard(title: "Open", value: "\(statusCounts[.open] ?? 0)", systemImage: "exclamationmark.circle")
                     }
                     NavigationLink {
                         ViolationListView(statusFilter: .warningSent, title: "Warning Sent")
                     } label: {
-                        MetricCard(title: "Warning Sent", value: "\(appState.store.violations.filter { $0.status == .warningSent }.count)", systemImage: "envelope.badge")
+                        MetricCard(title: "Warning Sent", value: "\(statusCounts[.warningSent] ?? 0)", systemImage: "envelope.badge")
                     }
                     NavigationLink {
                         ViolationListView(statusFilter: .resolved, title: "Resolved Violations")
                     } label: {
-                        MetricCard(title: "Resolved", value: "\(appState.store.violations.filter { $0.status == .resolved }.count)", systemImage: "checkmark.circle")
+                        MetricCard(title: "Resolved", value: "\(statusCounts[.resolved] ?? 0)", systemImage: "checkmark.circle")
                     }
                     NavigationLink {
                         AnalyticsView()

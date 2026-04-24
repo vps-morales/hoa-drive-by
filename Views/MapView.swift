@@ -73,16 +73,7 @@ struct ViolationMapMarker: View {
     let isSelected: Bool
 
     var markerColor: Color {
-        switch violation.status {
-        case .open:
-            return .red
-        case .warningSent:
-            return .orange
-        case .escalated:
-            return .purple
-        case .resolved:
-            return .green
-        }
+        violation.status.color
     }
 
     var body: some View {
@@ -106,16 +97,7 @@ struct ViolationMapCard: View {
     let property: Property
 
     var statusColor: Color {
-        switch violation.status {
-        case .open:
-            return .red
-        case .warningSent:
-            return .orange
-        case .escalated:
-            return .purple
-        case .resolved:
-            return .green
-        }
+        violation.status.color
     }
 
     var body: some View {
