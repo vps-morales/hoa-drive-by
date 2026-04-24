@@ -55,9 +55,6 @@ struct AnalyticsView: View {
                         TrendChartSection(dailyCounts: dailyCounts)
                     }
 
-                    if !metrics.violationsByCategory.isEmpty {
-                        CategorySection(categories: metrics.violationsByCategory)
-                    }
 
                     Spacer(minLength: 20)
                 }
@@ -191,57 +188,6 @@ struct DailyBarView: View {
                     .frame(height: 12)
             }
         }
-    }
-}
-
-struct CategorySection: View {
-    let categories: [String: Int]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("By Category")
-                .font(.headline)
-                .padding(.horizontal)
-
-            CategoryList(categories: categories)
-        }
-    }
-}
-
-struct CategoryList: View {
-    let categories: [String: Int]
-
-    var body: some View {
-        VStack(spacing: 8) {
-            ForEach(
-                categories.sorted { $0.value > $1.value },
-                id: \.key
-            ) { category, count in
-                CategoryRow(category: category, count: count)
-            }
-        }
-        .padding(.horizontal)
-    }
-}
-
-struct CategoryRow: View {
-    let category: String
-    let count: Int
-
-    var body: some View {
-        HStack {
-            Text(category)
-                .font(.subheadline)
-            Spacer()
-            Text("\(count)")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundStyle(.blue)
-        }
-        .padding(.vertical, 8)
-        .padding(.horizontal)
-        .background(Color(.systemGray6))
-        .cornerRadius(8)
     }
 }
 
