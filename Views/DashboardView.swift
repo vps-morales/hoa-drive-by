@@ -151,11 +151,23 @@ private struct MetricCard: View {
                 }
             }
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
+            if Int(value) == nil {
+                HStack(spacing: 4) {
+                    Text(title)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
+                    Text(value)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(iconColor)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
+                }
             }
 
             Spacer(minLength: 0)
