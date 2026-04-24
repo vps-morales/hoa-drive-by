@@ -51,7 +51,20 @@ struct AnalyticsView: View {
                     StatusGridView(metrics: metrics)
                         .padding(.horizontal)
 
+                    if !dailyCounts.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Violations Over Time")
+                                .font(.headline)
+                                .padding(.horizontal)
 
+                            SimpleBarChart(dailyCounts: dailyCounts)
+                                .frame(height: 160)
+                                .padding()
+                                .background(Color(.systemGray6))
+                                .cornerRadius(12)
+                                .padding(.horizontal)
+                        }
+                    }
 
                     Spacer(minLength: 20)
                 }
@@ -127,6 +140,35 @@ struct StatusCard: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(12)
+    }
+}
+
+struct SimpleBarChart: View {
+    let dailyCounts: [DailyViolationCount]
+
+    private var maxCount: Int {
+        dailyCounts.map { $0.count }.max() ?? 1
+    }
+
+    private var recentDays: [DailyViolationCount] {
+        Array(dailyCounts.suffix(7))
+    }
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 4) {
+            ForEach(recentDays, id: \.date) { day in
+                VStack(spacing: 4) {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color.blue)
+                        .frame(height: CGFloat(day.count) / CGFloat(max(maxCount, 1)) * 100)
+
+                    Text(day.date.formatted(date: .abbreviated, time: .omitted))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+        }
     }
 }
 
