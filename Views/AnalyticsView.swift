@@ -54,20 +54,8 @@ struct AnalyticsView: View {
                     }
                     .padding()
 
-                    // Trend Chart
                     if !dailyCounts.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Violations Over Time")
-                                .font(.headline)
-                                .padding(.horizontal)
-
-                            ViolationTrendChart(dailyCounts: dailyCounts)
-                                .frame(height: 200)
-                                .padding()
-                                .background(Color(.systemGray6))
-                                .cornerRadius(12)
-                                .padding(.horizontal)
-                        }
+                        TrendChartView(dailyCounts: dailyCounts)
                     }
 
                     if !metrics.violationsByCategory.isEmpty {
@@ -203,6 +191,25 @@ private struct StatusGridView: View {
                 count: metrics.resolvedCount,
                 color: .green
             )
+        }
+    }
+}
+
+private struct TrendChartView: View {
+    let dailyCounts: [DailyViolationCount]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Violations Over Time")
+                .font(.headline)
+                .padding(.horizontal)
+
+            ViolationTrendChart(dailyCounts: dailyCounts)
+                .frame(height: 200)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+                .padding(.horizontal)
         }
     }
 }
