@@ -13,42 +13,27 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color(.systemBackground).ignoresSafeArea()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("HOA Drive-By")
+                            .font(.largeTitle.bold())
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("HOA Drive-By")
-                                    .font(.system(size: 32, weight: .bold))
-                                    .foregroundStyle(.primary)
-
-                                Text("Photo-first inspections for small HOAs.")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-
-                            Spacer()
-
-                            Button(action: { showingNotificationSettings = true }) {
-                                Image(systemName: "bell.fill")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundStyle(.white)
-                                    .frame(width: 40, height: 40)
-                                    .background(Color.blue.opacity(0.8))
-                                    .cornerRadius(10)
-                            }
-                        }
+                        Text("Photo-first inspections for small HOAs.")
+                            .foregroundStyle(.secondary)
                     }
-                    .padding(16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(.systemGray6))
-                    )
 
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                    Spacer()
+
+                    Button(action: { showingNotificationSettings = true }) {
+                        Image(systemName: "bell.fill")
+                            .font(.system(size: 18))
+                            .foregroundStyle(.blue)
+                    }
+                }
+
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     NavigationLink {
                         CommunitiesView()
                     } label: {
@@ -95,12 +80,10 @@ struct DashboardView: View {
                         }
                     }
                 }
-                }
-                .padding(12)
             }
+            .padding()
         }
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Dashboard")
         .sheet(isPresented: $showingNotificationSettings) {
             NotificationSettingsView()
         }
@@ -112,46 +95,17 @@ private struct MetricCard: View {
     let value: String
     let systemImage: String
 
-    var cardColor: Color {
-        switch systemImage {
-        case "building.2": return Color.blue
-        case "exclamationmark.circle": return Color.red
-        case "envelope.badge": return Color.orange
-        case "checkmark.circle": return Color.green
-        case "chart.bar": return Color.purple
-        default: return Color.blue
-        }
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: systemImage)
-                    .font(.system(size: 24, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 44, height: 44)
-                    .background(cardColor.opacity(0.8))
-                    .cornerRadius(10)
-
-                Spacer()
-            }
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                Text(value)
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundStyle(.primary)
-            }
+        VStack(alignment: .leading, spacing: 10) {
+            Image(systemName: systemImage)
+                .font(.title2)
+            Text(value)
+                .font(.system(size: 28, weight: .bold))
+            Text(title)
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
-                .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 2)
-        )
+        .padding()
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16))
     }
 }
