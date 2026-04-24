@@ -51,9 +51,6 @@ struct AnalyticsView: View {
                     StatusGridView(metrics: metrics)
                         .padding(.horizontal)
 
-                    if !dailyCounts.isEmpty {
-                        TrendChartSection(dailyCounts: dailyCounts)
-                    }
 
 
                     Spacer(minLength: 20)
@@ -130,64 +127,6 @@ struct StatusCard: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(12)
-    }
-}
-
-struct TrendChartSection: View {
-    let dailyCounts: [DailyViolationCount]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Violations Over Time")
-                .font(.headline)
-                .padding(.horizontal)
-
-            ViolationTrendChart(dailyCounts: dailyCounts)
-                .frame(height: 200)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(12)
-                .padding(.horizontal)
-        }
-    }
-}
-
-struct ViolationTrendChart: View {
-    let dailyCounts: [DailyViolationCount]
-
-    private var maxCount: Int {
-        dailyCounts.map { $0.count }.max() ?? 1
-    }
-
-    var body: some View {
-        HStack(alignment: .bottom, spacing: 2) {
-            ForEach(Array(dailyCounts.suffix(14)).enumerated(), id: \.element.date) { index, day in
-                DailyBarView(day: day, maxCount: maxCount, showLabel: index % 2 == 0)
-            }
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-struct DailyBarView: View {
-    let day: DailyViolationCount
-    let maxCount: Int
-    let showLabel: Bool
-
-    var body: some View {
-        VStack(spacing: 2) {
-            RoundedRectangle(cornerRadius: 1)
-                .fill(Color.blue)
-                .frame(height: CGFloat(day.count) / CGFloat(max(maxCount, 1)) * 120)
-
-            if showLabel {
-                Text(day.date.formatted(date: .abbreviated, time: .omitted))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .frame(height: 12)
-            }
-        }
     }
 }
 
