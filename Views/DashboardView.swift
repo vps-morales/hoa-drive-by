@@ -144,22 +144,25 @@ private struct MetricCard: View {
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text(value)
-                        .font(.system(size: Int(value) != nil ? 36 : 13, weight: .semibold))
-                        .foregroundStyle(iconColor)
+                if Int(value) != nil {
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text(value)
+                            .font(.system(size: 36, weight: .bold))
+                            .foregroundStyle(iconColor)
+                    }
                 }
             }
 
             if Int(value) == nil {
-                HStack(spacing: 4) {
+                HStack(spacing: 6) {
+                    Text(value)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
                     Text(title)
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.primary)
-                    Text(value)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(iconColor)
                 }
             } else {
                 VStack(alignment: .leading, spacing: 2) {
