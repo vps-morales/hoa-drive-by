@@ -42,7 +42,6 @@ struct AnalyticsView: View {
 
                     // Summary Cards
                     VStack(spacing: 12) {
-                        // Total Violations
                         AnalyticsMetricCard(
                             title: "Total Violations",
                             value: "\(metrics.totalViolations)",
@@ -51,29 +50,7 @@ struct AnalyticsView: View {
                             subtitle: trendText
                         )
 
-                        // Status Grid
-                        HStack(spacing: 12) {
-                            StatusCard(
-                                status: .open,
-                                count: metrics.openCount,
-                                color: .red
-                            )
-                            StatusCard(
-                                status: .warningSent,
-                                count: metrics.warningCount,
-                                color: .orange
-                            )
-                            StatusCard(
-                                status: .escalated,
-                                count: metrics.escalatedCount,
-                                color: .purple
-                            )
-                            StatusCard(
-                                status: .resolved,
-                                count: metrics.resolvedCount,
-                                color: .green
-                            )
-                        }
+                        StatusGridView(metrics: metrics)
                     }
                     .padding()
 
@@ -93,35 +70,8 @@ struct AnalyticsView: View {
                         }
                     }
 
-                    // Category Breakdown
                     if !metrics.violationsByCategory.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("By Category")
-                                .font(.headline)
-                                .padding(.horizontal)
-
-                            VStack(spacing: 8) {
-                                ForEach(
-                                    metrics.violationsByCategory.sorted { $0.value > $1.value },
-                                    id: \.key
-                                ) { category, count in
-                                    HStack {
-                                        Text(category)
-                                            .font(.subheadline)
-                                        Spacer()
-                                        Text("\(count)")
-                                            .font(.subheadline)
-                                            .fontWeight(.semibold)
-                                            .foregroundStyle(.blue)
-                                    }
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal)
-                                    .background(Color(.systemGray6))
-                                    .cornerRadius(8)
-                                }
-                            }
-                            .padding(.horizontal)
-                        }
+                        CategoryBreakdownView(categories: metrics.violationsByCategory)
                     }
 
                     Spacer(minLength: 20)
@@ -224,6 +174,69 @@ private struct DailyBarView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
+        }
+    }
+}
+
+private struct StatusGridView: View {
+    let metrics: ViolationMetrics
+
+    var body: some View {
+        HStack(spacing: 12) {
+            StatusCard(
+                status: .open,
+                count: metrics.openCount,
+                color: .red
+            )
+            StatusCard(
+                status: .warningSent,
+                count: metrics.warningCount,
+                color: .orange
+            )
+            StatusCard(
+                status: .escalated,
+                count: metrics.escalatedCount,
+                color: .purple
+            )
+            StatusCard(
+                status: .resolved,
+                count: metrics.resolvedCount,
+                color: .green
+            )
+        }
+    }
+}
+
+private struct CategoryBreakdownView: View {
+    let categories: [String: Int]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("By Category")
+                .font(.headline)
+                .padding(.horizontal)
+
+            VStack(spacing: 8) {
+                ForEach(
+                    categories.sorted { $0.value > $1.value },
+                    id: \.key
+                ) { category, count in
+                    HStack {
+                        Text(category)
+                            .font(.subheadline)
+                        Spacer()
+                        Text("\(count)")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.blue)
+                    }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                }
+            }
+            .padding(.horizontal)
         }
     }
 }
