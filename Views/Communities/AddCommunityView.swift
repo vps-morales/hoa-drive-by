@@ -3,6 +3,7 @@ import SwiftUI
 struct AddCommunityView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var errorHandler: ErrorHandler
 
     @State private var name = ""
     @State private var address = ""
@@ -25,9 +26,10 @@ struct AddCommunityView: View {
                         Task {
                             do {
                                 try await appState.store.addCommunity(Community(name: name, address: address))
+                                appState.objectWillChange.send()
                                 dismiss()
                             } catch {
-                                print(error)
+                                errorHandler.handle(error)
                             }
                         }
                     }

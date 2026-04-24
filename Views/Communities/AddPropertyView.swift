@@ -3,6 +3,7 @@ import SwiftUI
 struct AddPropertyView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var errorHandler: ErrorHandler
 
     let communityID: UUID
 
@@ -34,9 +35,10 @@ struct AddPropertyView: View {
                             do {
                                 let property = Property(streetAddress: streetAddress, unit: unit, lotNumber: lotNumber, ownerName: ownerName, notes: notes)
                                 try await appState.store.addProperty(property, to: communityID)
+                                appState.objectWillChange.send()
                                 dismiss()
                             } catch {
-                                print(error)
+                                errorHandler.handle(error)
                             }
                         }
                     }

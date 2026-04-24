@@ -26,15 +26,27 @@ final class AppStore: ObservableObject {
             violations = []
             return
         }
-        let data = try Data(contentsOf: url)
-        let appData = try decoder.decode(AppData.self, from: data)
-        communities = appData.communities
-        violations = appData.violations
+        do {
+            let data = try Data(contentsOf: url)
+            let appData = try decoder.decode(AppData.self, from: data)
+            communities = appData.communities
+            violations = appData.violations
+        } catch let error as DecodingError {
+            throw AppError.decodingFailed(error.localizedDescription)
+        } catch {
+            throw AppError.loadFailed(error.localizedDescription)
+        }
     }
 
     func save() async throws {
-        let data = try encoder.encode(AppData(communities: communities, violations: violations))
-        try data.write(to: FileManager.appDataURL, options: .atomic)
+        do {
+            let data = try encoder.encode(AppData(communities: communities, violations: violations))
+            try data.write(to: FileManager.appDataURL, options: .atomic)
+        } catch let error as EncodingError {
+            throw AppError.encodingFailed(error.localizedDescription)
+        } catch {
+            throw AppError.saveFailed(error.localizedDescription)
+        }
     }
 
     func seedSampleData() {
@@ -115,9 +127,13 @@ final class AppStore: ObservableObject {
         let fileName = "\(UUID().uuidString).jpg"
         let url = FileManager.imagesDirectoryURL.appendingPathComponent(fileName)
         guard let data = image.jpegData(compressionQuality: 0.82) else {
-            throw NSError(domain: "HOADriveBy", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode image."])
+            throw AppError.imageSaveFailed
         }
-        try data.write(to: url, options: .atomic)
+        do {
+            try data.write(to: url, options: .atomic)
+        } catch {
+            throw AppError.imageSaveFailed
+        }
         return fileName
     }
 
